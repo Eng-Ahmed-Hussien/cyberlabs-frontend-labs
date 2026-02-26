@@ -1,8 +1,26 @@
+import { useEffect, useRef } from 'react';
 import { useLabSessionStore } from '../store/useLabSessionStore';
+import { useTheme } from '@/core/providers/theme-provider';
 
 export const LabIframe = () => {
   const iframeUrl = useLabSessionStore((state) => state.iframeUrl);
   const status = useLabSessionStore((state) => state.status);
+  const { theme } = useTheme();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // 1. Send theme via postMessage whenever it changes (Best for real-time toggle without reloading the lab)
+  useEffect(() => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          { type: 'CYBERLABS_THEME_CHANGE', theme },
+          '*' // Target origin should ideally be restricted if known, using '*' for sandbox flexibility
+        );
+      } catch (e) {
+        console.warn('Could not postMessage to iframe', e);
+      }
+    }
+  }, [theme]);
 
   if (!iframeUrl) {
     return (
@@ -13,6 +31,22 @@ export const LabIframe = () => {
       </div>
     );
   }
+
+  // 2. Append theme as a query parameter for initial load (Best for initial render)
+  // This safely appends ?theme=dark or &theme=dark to the existing URL
+  const getThemedUrl = (base: string, currentTheme: string) => {
+    try {
+      const url = new URL(base);
+      url.searchParams.set('theme', currentTheme);
+      return url.toString();
+    } catch {
+      // Fallback if URL is invalid or relative (unlikely for iframeUrl, but safe)
+      const separator = base.includes('?') ? '&' : '?';
+      return `${base}${separator}theme=${currentTheme}`;
+    }
+  };
+
+  const themedIframeUrl = getThemedUrl(iframeUrl, theme);
 
   return (
     <div className='relative h-full w-full bg-background'>
@@ -30,7 +64,8 @@ export const LabIframe = () => {
       )}
 
       <iframe
-        src={iframeUrl}
+        ref={iframeRef}
+        src={themedIframeUrl}
         className='h-full w-full border-0'
         title='CyberLabs Sandbox'
         // Security: Prevent parent navigation, popups, and restrict features
