@@ -16,21 +16,20 @@ export const HintsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const hints = useLabSessionStore((state) => state.hints);
   const sessionId = useLabSessionStore((state) => state.sessionId);
-
+  
   const { mutate: getNextHint, isPending } = useNextHintMutation(sessionId!);
 
-  // Find the first unused hint to be the next available one
   const nextAvailableHintIndex = hints.findIndex((h) => !h.isUsed);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant='outline' size='sm' className='gap-2'>
-          <LightbulbIcon className='h-4 w-4 text-yellow-500' />
+        <Button variant='outline' size='sm' className='h-8 gap-1.5 text-xs font-medium border-primary/20 hover:bg-primary/5'>
+          <LightbulbIcon className='h-3.5 w-3.5 text-yellow-500' />
           Hints
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-md'>
+      <DialogContent className='max-w-md bg-card'>
         <DialogHeader>
           <DialogTitle>Lab Hints</DialogTitle>
           <DialogDescription>
@@ -42,20 +41,18 @@ export const HintsDialog = () => {
           {hints.map((hint, index) => {
             const isUsed = hint.isUsed;
             const isNext = index === nextAvailableHintIndex;
-            const isLocked =
-              index > nextAvailableHintIndex && nextAvailableHintIndex !== -1;
+            const isLocked = index > nextAvailableHintIndex && nextAvailableHintIndex !== -1;
 
             return (
               <div
                 key={hint.id}
                 className={`rounded-lg border p-4 transition-colors ${
                   isUsed ? 'bg-muted/50 border-border' : 'border-border/50'
-                }`}>
+                }`}
+              >
                 <div className='flex items-center justify-between mb-2'>
                   <span className='font-semibold text-sm flex items-center gap-2'>
-                    {index === hints.length - 1
-                      ? 'Solution'
-                      : `Hint ${index + 1}`}
+                    {index === hints.length - 1 ? 'Solution' : `Hint ${index + 1}`}
                     {isUsed ? (
                       <UnlockIcon className='h-3 w-3 text-green-500' />
                     ) : (
@@ -79,7 +76,8 @@ export const HintsDialog = () => {
                     size='sm'
                     className='w-full mt-2'
                     disabled={isLocked || isPending}
-                    onClick={() => getNextHint()}>
+                    onClick={() => getNextHint()}
+                  >
                     {isNext ? 'Reveal' : 'Locked'}
                   </Button>
                 )}
