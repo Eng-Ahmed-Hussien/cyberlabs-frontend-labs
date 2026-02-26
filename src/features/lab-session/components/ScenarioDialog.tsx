@@ -1,4 +1,4 @@
-import { FileTextIcon, ShieldAlertIcon } from 'lucide-react';
+import { FileTextIcon, ShieldAlertIcon, LockKeyholeIcon, CodeIcon, CrosshairIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,61 +13,90 @@ import { useLabSessionStore } from '../store/useLabSessionStore';
 export const ScenarioDialog = () => {
   const template = useLabSessionStore((state) => state.template);
 
-  // Even if template isn't loaded yet, we can show a disabled version
-  // or a fallback, but here we'll just allow opening with a loading state if needed.
-  // The user asked "why is it hidden?", we remove the `hidden md:flex` and `if (!template) return null`.
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button 
           variant='outline' 
           size='sm' 
-          className='gap-2 flex border-primary/50 text-primary hover:bg-primary/10 rounded-full px-3'
+          className='gap-2 flex border-primary/40 text-primary hover:bg-primary/10 rounded-full px-4 h-8 transition-colors shadow-sm'
           disabled={!template}
         >
           <FileTextIcon className='h-3.5 w-3.5' />
-          <span className="hidden sm:inline">Lab Scenario</span>
-          <span className="inline sm:hidden">Scenario</span>
+          <span className="hidden sm:inline font-bold">Lab Scenario</span>
+          <span className="inline sm:hidden font-bold">Scenario</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-2xl bg-card border-primary/20 shadow-lg shadow-primary/5'>
-        <DialogHeader>
-          <DialogTitle className='flex items-center gap-2 text-xl'>
-            <ShieldAlertIcon className='h-6 w-6 text-primary' />
-            Attack Scenario Overview
+      
+      <DialogContent className='max-w-3xl bg-card p-0 overflow-hidden shadow-2xl border-primary/30'>
+        {/* Admin Banner */}
+        <div className="bg-primary/95 text-primary-foreground px-6 py-2.5 flex items-center justify-between text-xs font-bold uppercase tracking-widest shadow-md z-10 relative">
+          <div className="flex items-center gap-2">
+            <LockKeyholeIcon className="h-4 w-4" />
+            Instructor & Admin View Only
+          </div>
+          <span className="bg-black/20 px-2 py-0.5 rounded text-[10px]">Confidential</span>
+        </div>
+
+        <DialogHeader className='px-8 pt-8 pb-4 text-left'>
+          <DialogTitle className='flex items-center gap-3 text-2xl font-extrabold tracking-tight'>
+            <ShieldAlertIcon className='h-7 w-7 text-primary' />
+            Attack Scenario Breakdown
           </DialogTitle>
-          <DialogDescription className='text-muted-foreground'>
-            Admin view only. This explains the internal mechanics of the vulnerability.
+          <DialogDescription className='text-sm text-muted-foreground font-medium max-w-2xl mt-2'>
+            This panel details the internal mechanics of the vulnerability. It is hidden from students to prevent spoiling the challenge.
           </DialogDescription>
         </DialogHeader>
 
-        <div className='mt-4 space-y-4 text-sm leading-relaxed'>
+        <div className='px-8 pb-8 space-y-6 max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20'>
           {!template ? (
-             <div className='p-4 text-center text-muted-foreground'>Loading scenario details...</div>
+             <div className='p-12 text-center text-muted-foreground animate-pulse font-medium'>
+               Decrypting scenario details...
+             </div>
           ) : (
             <>
-              <div className='p-4 rounded-md bg-muted/50 border border-border'>
-                <h4 className='font-semibold text-foreground mb-2'>Context</h4>
-                <p>
+              {/* Context Block */}
+              <div className='rounded-xl bg-muted/40 border border-border/60 overflow-hidden'>
+                <div className='bg-muted/60 px-4 py-2 border-b border-border/60 flex items-center gap-2'>
+                  <FileTextIcon className='h-4 w-4 text-foreground/60' />
+                  <h4 className='font-bold text-xs uppercase tracking-wider text-foreground/80'>Environmental Context</h4>
+                </div>
+                <div className='p-5 text-sm text-foreground/90 leading-relaxed'>
                   This environment simulates a legacy banking portal. The backend directly concatenates user input into the SQL query without parameterization or proper sanitization.
-                </p>
+                </div>
               </div>
               
-              <div className='p-4 rounded-md bg-destructive/10 border border-destructive/20'>
-                <h4 className='font-semibold text-destructive mb-2'>The Vulnerable Code (Simulated)</h4>
-                <pre className='bg-background/80 p-3 rounded text-xs font-mono text-foreground overflow-x-auto border border-border'>
-                  <code>
-                    {`const query = "SELECT * FROM users WHERE username = '" + req.body.username + "' AND password = '" + req.body.password + "'";`}
-                  </code>
-                </pre>
+              {/* Code Block */}
+              <div className='rounded-xl overflow-hidden border border-destructive/30 shadow-sm'>
+                <div className='bg-destructive/10 px-4 py-2 border-b border-destructive/20 flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <CodeIcon className='h-4 w-4 text-destructive' />
+                    <h4 className='font-bold text-xs uppercase tracking-wider text-destructive'>Vulnerable Code (Simulated)</h4>
+                  </div>
+                  <div className='flex gap-1.5'>
+                    <div className='h-2.5 w-2.5 rounded-full bg-red-500/50'></div>
+                    <div className='h-2.5 w-2.5 rounded-full bg-yellow-500/50'></div>
+                    <div className='h-2.5 w-2.5 rounded-full bg-green-500/50'></div>
+                  </div>
+                </div>
+                <div className='bg-[#0d1117] p-5 overflow-x-auto'>
+                  <pre className='text-[13px] font-mono leading-relaxed'>
+                    <code className='text-gray-300'>
+                      <span className='text-[#ff7b72]'>const</span> <span className='text-[#79c0ff]'>query</span> <span className='text-[#ff7b72]'>=</span> <span className='text-[#a5d6ff]'>"SELECT * FROM users WHERE username = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.username <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]"'>" AND password = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.password <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]'>"'"</span>;
+                    </code>
+                  </pre>
+                </div>
               </div>
 
-              <div className='p-4 rounded-md bg-green-500/10 border border-green-500/20'>
-                <h4 className='font-semibold text-green-600 dark:text-green-400 mb-2'>Expected Exploitation</h4>
-                <p>
-                  By injecting <code>' OR '1'='1</code> into the username field, the query evaluates to true regardless of the password, effectively bypassing the authentication mechanism.
-                </p>
+              {/* Exploitation Block */}
+              <div className='rounded-xl bg-emerald-500/5 border border-emerald-500/20 overflow-hidden'>
+                <div className='bg-emerald-500/10 px-4 py-2 border-b border-emerald-500/20 flex items-center gap-2'>
+                  <CrosshairIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
+                  <h4 className='font-bold text-xs uppercase tracking-wider text-emerald-700 dark:text-emerald-400'>Expected Exploitation</h4>
+                </div>
+                <div className='p-5 text-sm text-foreground/90 leading-relaxed'>
+                  By injecting <code className='bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded text-xs font-mono font-bold mx-1 border border-emerald-500/30'>' OR '1'='1</code> into the username field, the query evaluates to true regardless of the password, effectively bypassing the authentication mechanism.
+                </div>
               </div>
             </>
           )}
