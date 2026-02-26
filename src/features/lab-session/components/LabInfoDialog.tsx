@@ -19,7 +19,7 @@ const getDifficultyColor = (difficulty: string) => {
   return 'bg-primary/10 text-primary border-primary/20';
 };
 
-export const LabInfoDialog = () => {
+export const LabInfoDialog = ({ isExpanded = true }: { isExpanded?: boolean }) => {
   const template = useLabSessionStore((state) => state.template);
 
   if (!template) return null;
@@ -27,9 +27,17 @@ export const LabInfoDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='ghost' size='sm' className='h-8 gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full px-3 transition-colors hover:bg-muted/50'>
-          <InfoIcon className='h-4 w-4' />
-          <span className="hidden sm:inline">Lab Info</span>
+        <Button 
+          variant='ghost' 
+          size='sm' 
+          className={cn(
+            'h-8 font-medium text-muted-foreground hover:text-foreground rounded-full transition-all duration-300 overflow-hidden hover:bg-muted/50',
+            isExpanded ? 'px-3 gap-1.5 text-xs' : 'w-8 px-0 justify-center'
+          )}
+          title="Lab Info"
+        >
+          <InfoIcon className='h-4 w-4 shrink-0' />
+          {isExpanded && <span className="truncate">Lab Info</span>}
         </Button>
       </DialogTrigger>
       
