@@ -128,7 +128,7 @@ export const HintsDialog = () => {
                         'font-bold text-[16px]',
                         isUsed ? 'text-foreground' : 
                         isNext ? 'text-[#cd8600] dark:text-amber-500' : 
-                        'text-muted-foreground/60'
+                        'text-foreground'
                       )}>
                         {isSolution ? 'Complete Solution' : `Intelligence Level 0${index + 1}`}
                       </span>
