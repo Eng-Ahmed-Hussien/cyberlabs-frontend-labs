@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLabSessionStore } from '../store/useLabSessionStore';
 import { useTheme } from '@/core/providers/theme-provider';
+import { LabCompletionOverlay } from './LabCompletionOverlay';
 
 export const LabIframe = () => {
   const iframeUrl = useLabSessionStore((state) => state.iframeUrl);
@@ -50,18 +51,7 @@ export const LabIframe = () => {
 
   return (
     <div className='relative h-full w-full bg-background'>
-      {status === 'COMPLETED' && (
-        <div className='absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm'>
-          <div className='text-center space-y-4'>
-            <h2 className='text-3xl font-bold text-green-500'>
-              Lab Completed! 🎉
-            </h2>
-            <p className='text-muted-foreground'>
-              You have successfully solved this challenge.
-            </p>
-          </div>
-        </div>
-      )}
+      {status === 'COMPLETED' && <LabCompletionOverlay />}
 
       <iframe
         ref={iframeRef}
