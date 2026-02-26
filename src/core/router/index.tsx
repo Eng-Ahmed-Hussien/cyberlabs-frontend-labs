@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <NotFoundPage />,
+    element: <UnauthorizedPage />,
   },
   {
     path: '/401',
