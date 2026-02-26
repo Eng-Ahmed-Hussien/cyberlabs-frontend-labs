@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FlagIcon, CheckCircle2Icon, Loader2Icon } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLabSessionStore } from '../store/useLabSessionStore';
-import { useSubmitFlagMutation } from '../api/labSessionApi';
+import { useCompleteLabMutation } from '../api/labSessionApi';
 import { toast } from 'sonner';
 
 export const SubmitFlagDialog = () => {
@@ -20,35 +19,21 @@ export const SubmitFlagDialog = () => {
   const [flag, setFlag] = useState('');
   
   const sessionId = useLabSessionStore((state) => state.sessionId);
-  const markAsCompleted = useLabSessionStore((state) => state.markAsCompleted);
-  const currentScore = useLabSessionStore((state) => state.currentScore);
-  
-  // Assuming useSubmitFlagMutation returns standard React Query mutation object
-  const { mutate: submitFlag, isPending } = useSubmitFlagMutation(sessionId!);
+  const { mutate: completeLab, isPending } = useCompleteLabMutation(sessionId!);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!flag.trim()) return;
 
-    submitFlag(flag.trim(), {
-      onSuccess: (data) => {
-        // Close the dialog
+    completeLab(flag.trim(), {
+      onSuccess: () => {
         setIsOpen(false);
         setFlag('');
-        
-        // Mark as completed in the store which triggers the Celebration Overlay
-        // If data returns the final score, use it, otherwise use current
-        markAsCompleted(data?.finalScore ?? currentScore);
-        
-        toast.success("Flag accepted!", {
-          description: "Mission accomplished.",
-          icon: <CheckCircle2Icon className="h-4 w-4 text-emerald-500" />,
-        });
+        // The mutation's onSuccess already calls markAsCompleted and shows a toast
       },
       onError: (error: any) => {
-        // Keep dialog open, show error toast
-        const errorMessage = error?.response?.data?.message || error?.message || "Invalid flag.";
-        toast.error("Flag validation failed", {
+        const errorMessage = error?.message || "Invalid flag.";
+        toast.error("Verification failed", {
           description: errorMessage,
         });
       }
