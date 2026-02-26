@@ -36,12 +36,12 @@ export const HintsDialog = () => {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className='max-w-3xl bg-[#fafafa] dark:bg-card p-0 overflow-hidden shadow-2xl border-0 rounded-[1.5rem] sm:rounded-[2rem]'>
+      <DialogContent className='max-w-3xl bg-[#fafafa] dark:bg-card p-0 shadow-2xl border-0 rounded-[1.5rem] sm:rounded-[2rem] flex flex-col max-h-[85vh]'>
         {/* Top Border Line */}
-        <div className="h-1.5 w-full bg-[#fbbc05]"></div>
+        <div className="h-[6px] w-full bg-[#fbbc05] shrink-0 rounded-t-[1.5rem] sm:rounded-t-[2rem]"></div>
 
         {/* Header Area (Matches Screenshot exactly) */}
-        <div className="relative px-10 pt-12 pb-8 bg-gradient-to-br from-[#fff7e5] to-[#fafafa] dark:from-amber-950/20 dark:to-card overflow-hidden">
+        <div className="relative px-10 pt-12 pb-8 bg-gradient-to-br from-[#fff7e5] to-[#fafafa] dark:from-amber-950/20 dark:to-card shrink-0">
           
           <div className='flex items-start justify-between relative z-10'>
             <div className='max-w-lg'>
@@ -71,8 +71,8 @@ export const HintsDialog = () => {
           </div>
         </div>
 
-        {/* Content Body */}
-        <div className='px-10 pb-10 flex flex-col gap-4 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-border/50'>
+        {/* Content Body - Scrollable Area */}
+        <div className='flex-1 overflow-y-auto min-h-0 px-10 pb-10 flex flex-col gap-4 scrollbar-thin scrollbar-thumb-border/50'>
           {hints.map((hint, index) => {
             const isUsed = hint.isUsed;
             const isNext = index === nextAvailableHintIndex;
@@ -87,7 +87,7 @@ export const HintsDialog = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
                 className={cn(
-                  "rounded-2xl border transition-all duration-300 relative overflow-hidden",
+                  "rounded-2xl border transition-all duration-300 relative shrink-0",
                   isUsed ? 'bg-white border-border/60 shadow-sm dark:bg-card' : 'bg-white border-border/60 shadow-sm dark:bg-card/80',
                   isNext && 'bg-[#fffaf0] border-[#fbbc05]/40 shadow-[0_4px_20px_rgba(251,188,5,0.06)] dark:bg-amber-500/5'
                 )}
@@ -128,7 +128,7 @@ export const HintsDialog = () => {
                         'font-bold text-[16px]',
                         isUsed ? 'text-foreground' : 
                         isNext ? 'text-[#cd8600] dark:text-amber-500' : 
-                        'text-foreground'
+                        'text-muted-foreground/60'
                       )}>
                         {isSolution ? 'Complete Solution' : `Intelligence Level 0${index + 1}`}
                       </span>
@@ -163,7 +163,7 @@ export const HintsDialog = () => {
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
-                      className="px-6 pb-6 pt-5"
+                      className="px-6 pb-6 pt-5 overflow-hidden"
                     >
                       <div className='text-[15px] text-foreground/80 leading-[1.7] font-medium whitespace-pre-wrap'>
                         {hint.text}
@@ -176,7 +176,7 @@ export const HintsDialog = () => {
           })}
 
           {hints.length === 0 && (
-            <div className='flex flex-col items-center justify-center gap-3 py-16 rounded-2xl border border-dashed border-border bg-muted/10'>
+            <div className='flex flex-col items-center justify-center gap-3 py-16 rounded-2xl border border-dashed border-border bg-muted/10 shrink-0'>
               <LightbulbIcon className="h-8 w-8 text-muted-foreground/30" />
               <p className='text-sm font-semibold text-muted-foreground/60'>No tactical intelligence available for this mission.</p>
             </div>
