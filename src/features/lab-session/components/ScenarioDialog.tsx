@@ -9,8 +9,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useLabSessionStore } from '../store/useLabSessionStore';
+import { cn } from '@/shared/utils/cn';
 
-export const ScenarioDialog = () => {
+export const ScenarioDialog = ({ isExpanded = true }: { isExpanded?: boolean }) => {
   const template = useLabSessionStore((state) => state.template);
 
   return (
@@ -19,12 +20,15 @@ export const ScenarioDialog = () => {
         <Button 
           variant='outline' 
           size='sm' 
-          className='gap-2 flex border-primary/40 text-primary hover:bg-primary/10 rounded-full px-4 h-8 transition-colors shadow-sm'
+          className={cn(
+            'flex border-primary/40 text-primary hover:bg-primary/10 rounded-full h-8 transition-all duration-300 shadow-sm overflow-hidden',
+            isExpanded ? 'px-4 gap-2' : 'w-8 px-0 justify-center'
+          )}
           disabled={!template}
+          title="Lab Scenario (Admin)"
         >
-          <FileTextIcon className='h-3.5 w-3.5' />
-          <span className="hidden sm:inline font-bold">Lab Scenario</span>
-          <span className="inline sm:hidden font-bold">Scenario</span>
+          <FileTextIcon className='h-3.5 w-3.5 shrink-0' />
+          {isExpanded && <span className="font-bold truncate">Scenario</span>}
         </Button>
       </DialogTrigger>
       
@@ -82,7 +86,7 @@ export const ScenarioDialog = () => {
                 <div className='bg-[#0d1117] p-5 overflow-x-auto'>
                   <pre className='text-[13px] font-mono leading-relaxed'>
                     <code className='text-gray-300'>
-                      <span className='text-[#ff7b72]'>const</span> <span className='text-[#79c0ff]'>query</span> <span className='text-[#ff7b72]'>=</span> <span className='text-[#a5d6ff]'>"SELECT * FROM users WHERE username = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.username <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]"'>" AND password = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.password <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]'>"'"</span>;
+                      <span className='text-[#ff7b72]'>const</span> <span className='text-[#79c0ff]'>query</span> <span className='text-[#ff7b72]'>=</span> <span className='text-[#a5d6ff]'>"SELECT * FROM users WHERE username = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.username <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]'>" AND password = '"</span> <span className='text-[#ff7b72]'>+</span> req.body.password <span className='text-[#ff7b72]'>+</span> <span className='text-[#a5d6ff]'>"'"</span>;
                     </code>
                   </pre>
                 </div>
