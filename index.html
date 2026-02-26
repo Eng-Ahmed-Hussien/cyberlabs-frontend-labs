@@ -39,41 +39,8 @@
     <link rel="shortcut icon" href="/images/favIcon.svg" type="image/x-icon" />
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/images/favIcon.svg" />
-
-    <style>
-      /* Inline preloader styles to load immediately before CSS */
-      #preloader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 99999;
-        transition: opacity 0.5s ease-out;
-      }
-      .preloader-img {
-        width: 150px;
-        height: auto;
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% { transform: scale(0.95); opacity: 0.8; }
-        50% { transform: scale(1.05); opacity: 1; }
-        100% { transform: scale(0.95); opacity: 0.8; }
-      }
-    </style>
   </head>
   <body>
-    <!-- PRELOADER -->
-    <div id="preloader">
-      <!-- Trying both potential paths based on main platform standard -->
-      <img src="/images/logo.png" onerror="this.src='/logo.png'" alt="CyberLabs Loading..." class="preloader-img" />
-    </div>
-
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
     <div id="root"></div>
@@ -89,19 +56,6 @@
           document.title = 'Come Back Please';
           const link = document.querySelector("link[rel*='icon']");
           if(link) link.setAttribute('href', '/images/favhand.png');
-        }
-      });
-
-      // Remove preloader once React starts hydrating
-      window.addEventListener('load', function() {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          setTimeout(() => {
-            preloader.style.opacity = '0';
-            setTimeout(() => {
-              preloader.style.display = 'none';
-            }, 500);
-          }, 500); // Small delay to ensure smooth transition
         }
       });
     </script>
