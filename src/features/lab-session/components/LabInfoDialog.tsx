@@ -18,42 +18,42 @@ export const LabInfoDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant='ghost'
-          size='sm'
-          className='gap-2 text-muted-foreground hover:text-foreground'>
-          <InfoIcon className='h-4 w-4' />
-          Lab Info
+        <Button variant='ghost' size='sm' className='h-8 gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground'>
+          <InfoIcon className='h-3.5 w-3.5' />
+          <span className="hidden sm:inline">Lab Info</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-md'>
+      <DialogContent className='max-w-md bg-card'>
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             {template.title}
-            <span className='text-xs font-normal px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase'>
+            <span className='text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider'>
               {template.difficulty}
             </span>
           </DialogTitle>
-          <DialogDescription>{template.description}</DialogDescription>
+          <DialogDescription className="text-sm">
+            {template.description}
+          </DialogDescription>
         </DialogHeader>
 
         <div className='mt-4 space-y-4'>
-          <div className='bg-muted p-4 rounded-lg border border-border/50'>
-            <h4 className='font-semibold text-sm flex items-center gap-2 mb-2'>
+          <div className='bg-muted/50 p-4 rounded-lg border border-border/50'>
+            <h4 className='font-semibold text-sm flex items-center gap-2 mb-2 text-foreground'>
               <TargetIcon className='h-4 w-4 text-primary' />
               Goal
             </h4>
-            <p className='text-sm'>{template.goal}</p>
+            <p className='text-sm text-muted-foreground leading-relaxed'>{template.goal}</p>
           </div>
 
           <div>
-            <h4 className='font-semibold text-sm mb-2'>Skills Earned</h4>
+            <h4 className='font-semibold text-sm mb-3 text-foreground'>Skills Earned</h4>
             <div className='flex flex-wrap gap-2'>
               {template.skills.map((skill, idx) => (
                 <span
                   key={idx}
-                  className='text-xs bg-secondary px-2.5 py-1 rounded-md flex items-center gap-1.5'>
-                  <CheckCircle2Icon className='h-3 w-3 text-green-500' />
+                  className='text-xs bg-secondary/50 border border-border/50 px-2.5 py-1 rounded-md flex items-center gap-1.5 text-foreground font-medium'
+                >
+                  <CheckCircle2Icon className='h-3.5 w-3.5 text-primary' />
                   {skill}
                 </span>
               ))}
