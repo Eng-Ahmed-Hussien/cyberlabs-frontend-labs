@@ -1,4 +1,4 @@
-import { InfoIcon, TargetIcon, CheckCircle2Icon } from 'lucide-react';
+import { InfoIcon, TargetIcon, CheckCircle2Icon, ShieldIcon, SparklesIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +9,15 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useLabSessionStore } from '../store/useLabSessionStore';
+import { cn } from '@/shared/utils/cn';
+
+const getDifficultyColor = (difficulty: string) => {
+  const d = difficulty.toLowerCase();
+  if (d === 'easy') return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+  if (d === 'medium') return 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20';
+  if (d === 'hard') return 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/20';
+  return 'bg-primary/10 text-primary border-primary/20';
+};
 
 export const LabInfoDialog = () => {
   const template = useLabSessionStore((state) => state.template);
@@ -18,40 +27,55 @@ export const LabInfoDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='ghost' size='sm' className='h-8 gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground'>
-          <InfoIcon className='h-3.5 w-3.5' />
+        <Button variant='ghost' size='sm' className='h-8 gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-full px-3 transition-colors hover:bg-muted/50'>
+          <InfoIcon className='h-4 w-4' />
           <span className="hidden sm:inline">Lab Info</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-md bg-card'>
-        <DialogHeader>
-          <DialogTitle className='flex items-center gap-2'>
-            {template.title}
-            <span className='text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider'>
-              {template.difficulty}
-            </span>
-          </DialogTitle>
-          <DialogDescription className="text-sm">
-            {template.description}
-          </DialogDescription>
-        </DialogHeader>
+      
+      <DialogContent className='max-w-xl bg-card p-0 overflow-hidden shadow-2xl border-border/40'>
+        {/* Decorative Header Background */}
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-6 border-b border-border/50">
+          <DialogHeader className='text-left space-y-3'>
+            <div className='flex items-center justify-between gap-4'>
+              <DialogTitle className='text-2xl font-bold tracking-tight text-foreground flex items-center gap-2'>
+                <ShieldIcon className='h-6 w-6 text-primary' />
+                {template.title}
+              </DialogTitle>
+              <span className={cn('text-xs font-bold px-3 py-1 rounded-full border uppercase tracking-widest shrink-0', getDifficultyColor(template.difficulty))}>
+                {template.difficulty}
+              </span>
+            </div>
+            <DialogDescription className="text-sm text-muted-foreground/90 leading-relaxed font-medium">
+              {template.description}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <div className='mt-4 space-y-4'>
-          <div className='bg-muted/50 p-4 rounded-lg border border-border/50'>
-            <h4 className='font-semibold text-sm flex items-center gap-2 mb-2 text-foreground'>
+        <div className='p-6 space-y-6 max-h-[60vh] overflow-y-auto scrollbar-thin'>
+          {/* Goal Section */}
+          <div className='relative overflow-hidden bg-muted/30 p-5 rounded-xl border border-border/60'>
+            <div className='absolute top-0 left-0 w-1 h-full bg-primary/60'></div>
+            <h4 className='font-bold text-sm flex items-center gap-2 mb-2 text-foreground'>
               <TargetIcon className='h-4 w-4 text-primary' />
-              Goal
+              Mission Goal
             </h4>
-            <p className='text-sm text-muted-foreground leading-relaxed'>{template.goal}</p>
+            <p className='text-sm text-foreground/80 leading-relaxed font-medium'>
+              {template.goal}
+            </p>
           </div>
 
+          {/* Skills Section */}
           <div>
-            <h4 className='font-semibold text-sm mb-3 text-foreground'>Skills Earned</h4>
-            <div className='flex flex-wrap gap-2'>
+            <h4 className='font-bold text-sm mb-3 flex items-center gap-2 text-foreground'>
+              <SparklesIcon className='h-4 w-4 text-yellow-500' />
+              Skills Acquired
+            </h4>
+            <div className='flex flex-wrap gap-2.5'>
               {template.skills.map((skill, idx) => (
                 <span
                   key={idx}
-                  className='text-xs bg-secondary/50 border border-border/50 px-2.5 py-1 rounded-md flex items-center gap-1.5 text-foreground font-medium'
+                  className='text-xs bg-background border border-border px-3 py-1.5 rounded-lg flex items-center gap-2 text-foreground/80 font-semibold shadow-sm transition-all hover:border-primary/30'
                 >
                   <CheckCircle2Icon className='h-3.5 w-3.5 text-primary' />
                   {skill}
