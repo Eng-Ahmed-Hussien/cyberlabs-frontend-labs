@@ -59,11 +59,18 @@ export const LabTopbar = () => {
           <span className='sr-only'>Toggle theme</span>
         </Button>
 
-        {/* Text Logo matching main platform style */}
+        {/* Real Logo from Platform */}
         <div className='ml-1 border-l pl-3 hidden sm:flex items-center select-none'>
-          <span className='cyberlabs-logo-title text-xl tracking-tight'>
-            Cyber<span>Labs</span>
-          </span>
+          <img 
+             src={theme === 'dark' ? '/images/logo-white.svg' : '/images/logo-dark.svg'} 
+             onError={(e) => {
+               e.currentTarget.style.display = 'none';
+               // Fallback to text if SVG not found
+               e.currentTarget.insertAdjacentHTML('afterend', '<span class="cyberlabs-logo-title text-xl tracking-tight">Cyber<span>Labs</span></span>');
+             }}
+             alt="CyberLabs Logo" 
+             className="h-6 w-auto" 
+          />
         </div>
       </div>
     </header>
