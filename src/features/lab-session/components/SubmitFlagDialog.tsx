@@ -13,8 +13,9 @@ import { Input } from '@/components/ui/input';
 import { useLabSessionStore } from '../store/useLabSessionStore';
 import { useCompleteLabMutation } from '../api/labSessionApi';
 import { toast } from 'sonner';
+import { cn } from '@/shared/utils/cn';
 
-export const SubmitFlagDialog = () => {
+export const SubmitFlagDialog = ({ isExpanded = true }: { isExpanded?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [flag, setFlag] = useState('');
   
@@ -46,10 +47,14 @@ export const SubmitFlagDialog = () => {
         <Button 
           variant='default' 
           size='sm' 
-          className='h-8 gap-1.5 rounded-full px-4 font-bold shadow-sm bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-0'
+          className={cn(
+            'h-8 rounded-full font-bold shadow-sm bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-0 transition-all duration-300 overflow-hidden',
+            isExpanded ? 'px-4 gap-1.5' : 'w-8 px-0 justify-center'
+          )}
+          title="Submit Flag"
         >
-          <FlagIcon className='h-3.5 w-3.5' />
-          Submit Flag
+          <FlagIcon className='h-3.5 w-3.5 shrink-0' />
+          {isExpanded && <span className="truncate">Submit Flag</span>}
         </Button>
       </DialogTrigger>
       
