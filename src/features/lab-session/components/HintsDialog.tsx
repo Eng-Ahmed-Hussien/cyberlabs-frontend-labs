@@ -125,12 +125,17 @@ export const HintsDialog = () => {
                     </div>
                   </div>
                   
-                  {!isUsed && (
+                  {!isUsed && !isLocked && (
                     <div className='flex items-center gap-1.5 bg-destructive/10 px-2.5 py-1 rounded-md border border-destructive/15'>
                       <ShieldAlertIcon className="h-3 w-3 text-destructive" />
                       <span className='text-xs font-bold text-destructive'>
                         -{hint.penaltyPercent}%
                       </span>
+                    </div>
+                  )}
+                  {isLocked && (
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 pr-2">
+                      Locked
                     </div>
                   )}
                 </div>
