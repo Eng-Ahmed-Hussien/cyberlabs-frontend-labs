@@ -7,9 +7,11 @@ interface LabSessionState {
   status: LabStatus;
   baseScore: number;
   currentScore: number;
-  iframeUrl: string | null;
   hints: HintMeta[];
   template: LabTemplate | null;
+
+  // Computed/Derived conceptually
+  targetUrl: string | null;
 
   // Actions
   initSession: (data: LabSessionResponse) => void;
@@ -24,9 +26,9 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
   status: 'ACTIVE',
   baseScore: 100,
   currentScore: 100,
-  iframeUrl: null,
   hints: [],
   template: null,
+  targetUrl: null,
 
   // Actions
   initSession: (data) =>
@@ -35,9 +37,9 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
       status: data.status,
       baseScore: data.baseScore,
       currentScore: data.currentScore,
-      iframeUrl: data.iframeUrl,
       hints: data.hintsMeta,
       template: data.template,
+      targetUrl: data.template?.engineConfig?.targetUrl || data.iframeUrl || null,
     }),
 
   unlockHint: (hintId, text, newScore) =>
@@ -60,8 +62,8 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
       status: 'ACTIVE',
       baseScore: 100,
       currentScore: 100,
-      iframeUrl: null,
       hints: [],
       template: null,
+      targetUrl: null,
     }),
 }));
