@@ -35,58 +35,73 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="CyberLabs" />
 
-    <!-- Twitter -->
-    <meta
-      name="twitter:card"
-      content="https://digitopia-project.vercel.app/meta-image.jpg?v=2" />
-    <meta name="twitter:url" content="https://digitopia-project.vercel.app/" />
-    <meta
-      name="twitter:title"
-      content="CyberLabs Platform | Cybersecurity Learning Gateway" />
-    <meta
-      name="twitter:description"
-      content="CyberLabs Platform is built for performance, security, and accessibility. Developed by Ahmed Hussien & the CyberLabs team." />
-    <meta
-      name="twitter:image"
-      content="https://digitopia-project.vercel.app/meta-image.jpg?v=2" />
-    <meta name="twitter:creator" content="@CyberLabs" />
-
     <!-- Favicon -->
     <link rel="shortcut icon" href="/images/favIcon.svg" type="image/x-icon" />
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/images/favIcon.svg" />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap"
-      rel="stylesheet" />
-    <!-- Font Awesome CDN -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+      /* Inline preloader styles to load immediately before CSS */
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        transition: opacity 0.5s ease-out;
+      }
+      .preloader-img {
+        width: 150px;
+        height: auto;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(0.95); opacity: 0.8; }
+      }
+    </style>
   </head>
   <body>
+    <!-- PRELOADER -->
+    <div id="preloader">
+      <!-- Trying both potential paths based on main platform standard -->
+      <img src="/images/logo.png" onerror="this.src='/logo.png'" alt="CyberLabs Loading..." class="preloader-img" />
+    </div>
+
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
     <div id="root"></div>
-    <noscript>
-      user name = support@cyberlap.com password = cyberlap use this for login
-    </noscript>
-    <!--  user name = support@cyberlap.com password = cyberlap use this for login -->
+
     <script>
+      // Tab visibility text and favicon change
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible') {
-          document.title = 'Cyber Security';
-          document
-            .querySelector("link[rel*='icon']")
-            .setAttribute('href', '/images/favIcon.svg');
+          document.title = 'CyberLabs | Labs';
+          const link = document.querySelector("link[rel*='icon']");
+          if(link) link.setAttribute('href', '/images/favIcon.svg');
         } else {
           document.title = 'Come Back Please';
-          document
-            .querySelector("link[rel*='icon']")
-            .setAttribute('href', '/images/favhand.png');
+          const link = document.querySelector("link[rel*='icon']");
+          if(link) link.setAttribute('href', '/images/favhand.png');
+        }
+      });
+
+      // Remove preloader once React starts hydrating
+      window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+          setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+              preloader.style.display = 'none';
+            }, 500);
+          }, 500); // Small delay to ensure smooth transition
         }
       });
     </script>
