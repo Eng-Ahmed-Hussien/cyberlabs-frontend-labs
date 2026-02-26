@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { LabSessionResponse, HintMeta, LabStatus } from '../types';
+import type { LabSessionResponse, HintMeta, LabStatus, LabTemplate } from '../types';
 
 interface LabSessionState {
   // State
@@ -9,6 +9,7 @@ interface LabSessionState {
   currentScore: number;
   iframeUrl: string | null;
   hints: HintMeta[];
+  template: LabTemplate | null;
 
   // Actions
   initSession: (data: LabSessionResponse) => void;
@@ -25,6 +26,7 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
   currentScore: 100,
   iframeUrl: null,
   hints: [],
+  template: null,
 
   // Actions
   initSession: (data) =>
@@ -35,6 +37,7 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
       currentScore: data.currentScore,
       iframeUrl: data.iframeUrl,
       hints: data.hintsMeta,
+      template: data.template,
     }),
 
   unlockHint: (hintId, text, newScore) =>
@@ -59,5 +62,6 @@ export const useLabSessionStore = create<LabSessionState>((set) => ({
       currentScore: 100,
       iframeUrl: null,
       hints: [],
+      template: null,
     }),
 }));
