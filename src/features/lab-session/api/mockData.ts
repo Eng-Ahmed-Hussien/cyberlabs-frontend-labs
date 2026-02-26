@@ -6,18 +6,25 @@ export const mockLabSession: LabSessionResponse = {
   baseScore: 100,
   currentScore: 100,
   startedAt: new Date().toISOString(),
-  // For the sake of mocking, we can load a safe example site or a local HTML file
-  // In reality, this would be the dynamically generated sandbox URL
-  iframeUrl: '/mock-vulnerable-app.html',
   template: {
     id: 'tpl_sqli_01',
     title: 'SQL Injection: Authentication Bypass',
+    category: 'SQLi',
     description:
       'In this lab, you need to bypass the login screen by exploiting a SQL injection vulnerability in the authentication query.',
     goal: 'Access the administrator dashboard without knowing the password.',
     skills: ['SQLi', 'Authentication Bypass', 'Payload Crafting'],
-    difficulty: 'BEGINNER',
-    executionMode: 'SHARED_BACKEND',
+    badges: ['SQL Novice', 'First Blood'],
+    difficulty: 'Easy',
+    scenario: {
+      context: 'This environment simulates a legacy banking portal. The backend directly concatenates user input into the SQL query without parameterization or proper sanitization.',
+      vulnerableCode: 'const query = "SELECT * FROM users WHERE username = \'" + req.body.username + "\' AND password = \'" + req.body.password + "\'";',
+      exploitation: "By injecting ' OR '1'='1 into the username field, the query evaluates to true regardless of the password, effectively bypassing the authentication mechanism."
+    },
+    engineConfig: {
+      type: 'shared-backend',
+      targetUrl: '/mock-vulnerable-app.html', 
+    }
   },
   hintsMeta: [
     {
