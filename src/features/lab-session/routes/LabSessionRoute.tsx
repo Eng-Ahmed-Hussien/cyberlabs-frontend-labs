@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useLabSessionQuery } from '../api/labSessionApi';
 import { LabLayout } from '../components/LabLayout';
 import { AlertCircle } from 'lucide-react';
+import { Preloader } from '../components/preloader';
 
 export const LabSessionRoute = () => {
   const { labInstanceId } = useParams<{ labInstanceId: string }>();
@@ -9,11 +10,7 @@ export const LabSessionRoute = () => {
   const { isLoading, isError, error } = useLabSessionQuery(labInstanceId!);
 
   if (isLoading) {
-    return (
-      <div className='flex h-screen items-center justify-center bg-background'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
-      </div>
-    );
+    return <Preloader />;
   }
 
   if (isError) {
