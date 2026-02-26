@@ -1,8 +1,9 @@
-import { Moon, Sun, ArrowLeftIcon, TrophyIcon } from 'lucide-react';
+import { Moon, Sun, ArrowLeftIcon, TrophyIcon, FlagIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HintsDialog } from './HintsDialog';
 import { LabInfoDialog } from './LabInfoDialog';
 import { ScenarioDialog } from './ScenarioDialog';
+import { SubmitFlagDialog } from './SubmitFlagDialog';
 import { useLabSessionStore } from '../store/useLabSessionStore';
 import { useTheme } from '@/core/providers/theme-provider';
 import { Logo } from './Logo';
@@ -14,6 +15,7 @@ export const LabTopbar = () => {
   const { theme, setTheme } = useTheme();
   const currentScore = useLabSessionStore((state) => state.currentScore);
   const baseScore = useLabSessionStore((state) => state.baseScore);
+  const status = useLabSessionStore((state) => state.status);
   const isAdmin = useIsAdmin();
 
   const handleExit = () => {
@@ -68,8 +70,12 @@ export const LabTopbar = () => {
 
         <div className='w-px h-6 bg-border/50 hidden sm:block'></div>
 
-        {/* 4. Exit (Far Right) */}
-        <div className='flex items-center px-1'>
+        {/* 4. Action & Exit (Far Right) */}
+        <div className='flex items-center gap-2 px-1'>
+          {status !== 'COMPLETED' && (
+            <SubmitFlagDialog />
+          )}
+          
           <Button
             variant='destructive'
             size='sm'
