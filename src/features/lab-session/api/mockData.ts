@@ -8,7 +8,7 @@ export const mockLabSession: LabSessionResponse = {
   startedAt: new Date().toISOString(),
   // For the sake of mocking, we can load a safe example site or a local HTML file
   // In reality, this would be the dynamically generated sandbox URL
-  iframeUrl: 'https://example.com',
+  iframeUrl: '/mock-vulnerable-app.html',
   template: {
     id: 'tpl_sqli_01',
     title: 'SQL Injection: Authentication Bypass',
