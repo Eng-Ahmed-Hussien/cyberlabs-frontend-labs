@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Moon, Sun, ArrowLeftIcon, TrophyIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from 'lucide-react';
+import { Moon, Sun, ArrowLeftIcon, TrophyIcon, PanelLeftCloseIcon, PanelLeftOpenIcon, ShieldCheckIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HintsDialog } from './HintsDialog';
 import { LabInfoDialog } from './LabInfoDialog';
@@ -33,7 +33,7 @@ export const LabTopbar = () => {
       <Button
         variant='outline'
         size='icon'
-        className='h-10 w-10 rounded-full bg-background/95 backdrop-blur-md border border-border/50 shadow-lg hover:bg-muted shrink-0'
+        className='h-10 w-10 rounded-full bg-background/95 backdrop-blur-md border border-border/50 shadow-lg hover:bg-muted shrink-0 transition-transform active:scale-95'
         onClick={() => setIsExpanded(!isExpanded)}
         title={isExpanded ? "Collapse toolbar" : "Expand toolbar"}
       >
@@ -47,36 +47,47 @@ export const LabTopbar = () => {
       {/* Floating Island Topbar */}
       <header 
         className={cn(
-          'h-14 bg-background/95 backdrop-blur-md border border-border/50 rounded-2xl flex items-center shrink-0 shadow-lg transition-all duration-400 ease-in-out overflow-hidden',
-          isExpanded ? 'max-w-[1200px] px-2 gap-2 opacity-100' : 'max-w-0 px-0 gap-0 opacity-0 border-0 shadow-none pointer-events-none'
+          'h-14 bg-background/95 backdrop-blur-md border border-border/50 rounded-2xl flex items-center shrink-0 shadow-lg transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] overflow-hidden',
+          isExpanded ? 'w-auto px-2 gap-2 opacity-100 translate-x-0' : 'w-auto px-1 gap-1 opacity-100 translate-x-0'
         )}
       >
         {/* 1. Logo (Far Left) */}
-        <div className='flex items-center px-2 pr-3 shrink-0 whitespace-nowrap'>
+        <div className={cn('flex items-center transition-all duration-300', isExpanded ? 'px-2 pr-3 w-auto opacity-100' : 'w-0 px-0 opacity-0 overflow-hidden')}>
           <Logo size='sm' showBadge={false} />
         </div>
+        
+        {!isExpanded && (
+          <div className="pl-2 pr-1">
+             <ShieldCheckIcon className="h-6 w-6 text-primary" />
+          </div>
+        )}
 
         <div className='w-px h-6 bg-border/50 hidden sm:block shrink-0'></div>
 
         {/* 2. Score Badge (Prominent) */}
-        <div className='flex items-center px-2 shrink-0 whitespace-nowrap'>
-          <div className='flex items-center gap-2 bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full'>
+        <div className='flex items-center px-2 shrink-0'>
+          <div className={cn(
+            'flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full transition-all duration-300',
+            isExpanded ? 'px-3 py-1.5' : 'p-1.5 justify-center'
+          )}>
             <TrophyIcon className='h-4 w-4 text-primary' />
-            <div className='flex items-baseline gap-1'>
-              <span className='text-sm font-bold text-primary leading-none'>
-                {currentScore}
-              </span>
-              <span className='text-[10px] font-semibold text-muted-foreground leading-none'>
-                / {baseScore}
-              </span>
-            </div>
+            {isExpanded && (
+              <div className='flex items-baseline gap-1 animate-in fade-in duration-300'>
+                <span className='text-sm font-bold text-primary leading-none'>
+                  {currentScore}
+                </span>
+                <span className='text-[10px] font-semibold text-muted-foreground leading-none'>
+                  / {baseScore}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
         <div className='w-px h-6 bg-border/50 hidden sm:block shrink-0'></div>
 
         {/* 3. Tools (Middle Right) */}
-        <div className='flex items-center gap-1.5 px-2 shrink-0 whitespace-nowrap'>
+        <div className={cn('flex items-center shrink-0', isExpanded ? 'gap-1.5 px-2' : 'gap-1 px-1')}>
           {isAdmin && <ScenarioDialog isExpanded={isExpanded} />}
           <LabInfoDialog isExpanded={isExpanded} />
           <HintsDialog isExpanded={isExpanded} />
@@ -96,7 +107,7 @@ export const LabTopbar = () => {
         <div className='w-px h-6 bg-border/50 hidden sm:block shrink-0'></div>
 
         {/* 4. Action & Exit (Far Right) */}
-        <div className='flex items-center gap-2 px-1 shrink-0 whitespace-nowrap'>
+        <div className={cn('flex items-center shrink-0', isExpanded ? 'gap-2 px-1' : 'gap-1 px-0')}>
           {status !== 'COMPLETED' && (
             <SubmitFlagDialog isExpanded={isExpanded} />
           )}
@@ -104,12 +115,15 @@ export const LabTopbar = () => {
           <Button
             variant='destructive'
             size='sm'
-            className={cn('h-8 rounded-full font-semibold shadow-sm transition-all shrink-0', isExpanded ? 'px-4 gap-1.5' : 'w-8 px-0 justify-center')}
+            className={cn(
+              'h-8 rounded-full font-semibold shadow-sm transition-all duration-300 shrink-0 overflow-hidden',
+              isExpanded ? 'px-4 gap-1.5' : 'w-8 px-0 justify-center'
+            )}
             onClick={handleExit}
             title="Exit Lab"
           >
             <ArrowLeftIcon className='h-3.5 w-3.5 shrink-0' />
-            {isExpanded && <span>Exit Lab</span>}
+            {isExpanded && <span className="whitespace-nowrap">Exit Lab</span>}
           </Button>
         </div>
       </header>
