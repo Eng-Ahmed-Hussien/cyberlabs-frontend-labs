@@ -5,6 +5,7 @@ import { LabInfoDialog } from './LabInfoDialog';
 import { ScenarioDialog } from './ScenarioDialog';
 import { useLabSessionStore } from '../store/useLabSessionStore';
 import { useTheme } from '@/core/providers/theme-provider';
+import { Logo } from './Logo';
 
 const useIsAdmin = () => {
   return true; // Admin toggle
@@ -59,18 +60,9 @@ export const LabTopbar = () => {
           <span className='sr-only'>Toggle theme</span>
         </Button>
 
-        {/* Real Logo from Platform */}
+        {/* Real Logo Component */}
         <div className='ml-1 border-l pl-3 hidden sm:flex items-center select-none'>
-          <img 
-             src={theme === 'dark' ? '/images/logo-white.svg' : '/images/logo-dark.svg'} 
-             onError={(e) => {
-               e.currentTarget.style.display = 'none';
-               // Fallback to text if SVG not found
-               e.currentTarget.insertAdjacentHTML('afterend', '<span class="cyberlabs-logo-title text-xl tracking-tight">Cyber<span>Labs</span></span>');
-             }}
-             alt="CyberLabs Logo" 
-             className="h-6 w-auto" 
-          />
+          <Logo size="sm" showBadge={false} />
         </div>
       </div>
     </header>
