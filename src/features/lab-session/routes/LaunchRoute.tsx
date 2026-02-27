@@ -96,7 +96,7 @@ export const LaunchRoute = () => {
 
         <a
           href={
-            import.meta.env.VITE_MAIN_APP_URL ?? 'https://cyberlabs.io/labs'
+            import.meta.env.VITE_MAIN_APP_URL ?? 'http://localhost:5173/labs'
           }
           className='mt-1 rounded-full bg-primary px-6 py-2.5 text-sm font-bold
                      text-primary-foreground hover:bg-primary/90 transition-colors'>

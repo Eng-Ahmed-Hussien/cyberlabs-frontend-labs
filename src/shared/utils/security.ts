@@ -3,7 +3,7 @@ import { env } from '../config/env';
 export const isSafeOrigin = (origin: string): boolean => {
   const allowedOrigins = [
     env.VITE_API_URL,
-    env.VITE_MAIN_PLATFORM_URL,
+    env.VITE_MAIN_APP_URL,
     window.location.origin,
   ];
   return allowedOrigins.includes(origin);
