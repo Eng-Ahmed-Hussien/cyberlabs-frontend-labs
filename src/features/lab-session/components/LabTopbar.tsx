@@ -109,7 +109,7 @@ export const LabTopbar = () => {
           )}>
           {isAdmin && <ScenarioDialog isExpanded={isExpanded} />}
           <LabInfoDialog isExpanded={isExpanded} />
-          <HintsDialog isExpanded={isExpanded} />
+          <HintsDialog />
 
           <Button
             variant='ghost'

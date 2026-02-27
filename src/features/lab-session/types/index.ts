@@ -14,7 +14,10 @@ export interface ScenarioMeta {
   exploitation: string;
 }
 
-export type ExecutionEngine = 'client-side' | 'shared-backend' | 'docker-container';
+export type ExecutionEngine =
+  | 'client-side'
+  | 'shared-backend'
+  | 'docker-container';
 
 export interface LabTemplate {
   id: string;
@@ -24,7 +27,15 @@ export interface LabTemplate {
   goal: string;
   skills: string[];
   badges: string[];
-  difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert' | 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'; // Keeping old ones for backward compatibility temporarily
+  difficulty:
+    | 'Easy'
+    | 'Medium'
+    | 'Hard'
+    | 'Expert'
+    | 'BEGINNER'
+    | 'INTERMEDIATE'
+    | 'ADVANCED'
+    | 'EXPERT'; // Keeping old ones for backward compatibility temporarily
   scenario?: ScenarioMeta;
   engineConfig: {
     type: ExecutionEngine;
@@ -45,7 +56,7 @@ export interface LabSessionResponse {
   template: LabTemplate;
   hintsMeta: HintMeta[];
   // Deprecated: Moving towards engineConfig.targetUrl, but kept for fallback
-  iframeUrl?: string; 
+  iframeUrl?: string;
 }
 
 export interface NextHintResponse {

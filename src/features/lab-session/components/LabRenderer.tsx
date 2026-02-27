@@ -2,29 +2,49 @@ import { useEffect, useRef, Suspense, lazy } from 'react';
 import { useLabSessionStore } from '../store/useLabSessionStore';
 import { useTheme } from '@/core/providers/theme-provider';
 import { LabCompletionOverlay } from './LabCompletionOverlay';
+import { Loader2 } from 'lucide-react';
+
+// ─── Registry: clientComponentId → lazy component ─────────────────────────
+const LAB_COMPONENTS: Record<string, React.LazyExoticComponent<React.FC>> = {
+  'sqli-lab1': lazy(() =>
+    import('@/features/labs/sql-injection').then((m) => ({
+      default: m.SQLiLab1,
+    })),
+  ),
+};
+
+const LabLoadingFallback = () => (
+  <div className='flex h-full w-full items-center justify-center bg-background'>
+    <div className='flex flex-col items-center gap-3 text-center'>
+      <Loader2 className='h-8 w-8 text-primary animate-spin' />
+      <p className='text-sm text-muted-foreground'>
+        Loading lab environment...
+      </p>
+    </div>
+  </div>
+);
 
 export const LabRenderer = () => {
-  const targetUrl = useLabSessionStore((state) => state.targetUrl);
-  const template = useLabSessionStore((state) => state.template);
-  const status = useLabSessionStore((state) => state.status);
+  const targetUrl = useLabSessionStore((s) => s.targetUrl);
+  const template = useLabSessionStore((s) => s.template);
+  const status = useLabSessionStore((s) => s.status);
+  // const sessionId = useLabSessionStore((s) => s.sessionId);
   const { theme } = useTheme();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // 1. Send theme via postMessage whenever it changes (Best for real-time toggle without reloading the lab)
   useEffect(() => {
-    if (iframeRef.current && iframeRef.current.contentWindow) {
+    if (iframeRef.current?.contentWindow) {
       try {
         iframeRef.current.contentWindow.postMessage(
           { type: 'CYBERLABS_THEME_CHANGE', theme },
-          '*' // Target origin should ideally be restricted if known, using '*' for sandbox flexibility
+          '*',
         );
       } catch (e) {
-        console.warn('Could not postMessage to iframe', e);
+        console.warn('postMessage failed', e);
       }
     }
   }, [theme]);
 
-  // Loading state
   if (!template) {
     return (
       <div className='flex h-full w-full items-center justify-center bg-muted/20'>
@@ -35,29 +55,35 @@ export const LabRenderer = () => {
     );
   }
 
-  // --- RENDERING STRATEGY ---
+  // ── Strategy A: Client-Side React Component ──────────────────────────────
+  if (
+    template.engineConfig.type === 'client-side' ||
+    template.engineConfig.type === 'shared-backend'
+  ) {
+    const componentId = template.engineConfig.clientComponentId;
+    const LabComponent = componentId ? LAB_COMPONENTS[componentId] : undefined;
 
-  // Strategy A: Client-Side Simulation (React Component)
-  if (template.engineConfig.type === 'client-side') {
-    // In a real app, you might map clientComponentId to a lazy-loaded component
-    // For now, we'll just show a placeholder
-    return (
-      <div className='relative h-full w-full bg-background flex items-center justify-center'>
-        {status === 'COMPLETED' && <LabCompletionOverlay />}
-        <div className="text-center space-y-4 max-w-lg p-8 border border-border/50 rounded-2xl bg-card shadow-sm">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <span className="text-2xl">⚡</span>
-          </div>
-          <h2 className="text-2xl font-bold">Client-Side Simulation</h2>
-          <p className="text-muted-foreground">
-            This lab runs entirely within your browser. Component ID: <code className="bg-muted px-1.5 py-0.5 rounded">{template.engineConfig.clientComponentId || 'N/A'}</code>
+    if (!LabComponent) {
+      return (
+        <div className='flex h-full w-full items-center justify-center bg-muted/20'>
+          <p className='text-destructive'>
+            Lab component not found: <code>{componentId ?? 'undefined'}</code>
           </p>
         </div>
+      );
+    }
+
+    return (
+      <div className='relative h-full w-full bg-background'>
+        {status === 'COMPLETED' && <LabCompletionOverlay />}
+        <Suspense fallback={<LabLoadingFallback />}>
+          <LabComponent />
+        </Suspense>
       </div>
     );
   }
 
-  // Strategy B: Shared Backend or Docker (Iframe)
+  // ── Strategy B: Iframe (Docker / external URL) ───────────────────────────
   if (!targetUrl) {
     return (
       <div className='flex h-full w-full items-center justify-center bg-muted/20'>
@@ -68,27 +94,22 @@ export const LabRenderer = () => {
     );
   }
 
-  // 2. Append theme as a query parameter for initial load
-  const getThemedUrl = (base: string, currentTheme: string) => {
+  const getThemedUrl = (base: string, t: string) => {
     try {
       const url = new URL(base);
-      url.searchParams.set('theme', currentTheme);
+      url.searchParams.set('theme', t);
       return url.toString();
     } catch {
-      const separator = base.includes('?') ? '&' : '?';
-      return `${base}${separator}theme=${currentTheme}`;
+      return `${base}${base.includes('?') ? '&' : '?'}theme=${t}`;
     }
   };
-
-  const themedTargetUrl = getThemedUrl(targetUrl, theme);
 
   return (
     <div className='relative h-full w-full bg-background'>
       {status === 'COMPLETED' && <LabCompletionOverlay />}
-
       <iframe
         ref={iframeRef}
-        src={themedTargetUrl}
+        src={getThemedUrl(targetUrl, theme)}
         className='h-full w-full border-0'
         title='CyberLabs Sandbox'
         sandbox='allow-scripts allow-forms allow-same-origin'
