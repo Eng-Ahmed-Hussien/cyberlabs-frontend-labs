@@ -1,7 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
 import { Preloader } from '@/features/lab-session/components/preloader';
-import NotFoundPage from '@/features/errors/pages/not-found-page';
+// import NotFoundPage from '@/features/errors/pages/not-found-page';
 import UnauthorizedPage from '@/features/errors/pages/unauthorized-page';
 
 const LabSessionRouteLazy = lazy(async () => {
@@ -9,9 +9,22 @@ const LabSessionRouteLazy = lazy(async () => {
   return { default: mod.LabSessionRoute };
 });
 
+// ← NEW
+const LaunchRouteLazy = lazy(async () => {
+  const mod = await import('@/features/lab-session/routes/LaunchRoute');
+  return { default: mod.LaunchRoute };
+});
+
 export const router = createBrowserRouter([
   {
-    // This is the main URL format for accessing a lab
+    path: '/launch/:token', // ← NEW: one-time token route
+    element: (
+      <Suspense fallback={<Preloader />}>
+        <LaunchRouteLazy />
+      </Suspense>
+    ),
+  },
+  {
     path: '/sessions/:labInstanceId',
     element: (
       <Suspense fallback={<Preloader />}>
@@ -20,11 +33,11 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '*',
+    path: '/401',
     element: <UnauthorizedPage />,
   },
   {
-    path: '/401',
+    path: '*',
     element: <UnauthorizedPage />,
   },
 ]);
